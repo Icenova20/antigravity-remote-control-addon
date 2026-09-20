@@ -1,4 +1,7 @@
-FROM ghcr.io/home-assistant/amd64-base-debian:bookworm
+ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base-debian:bookworm
+FROM ${BUILD_FROM}
+
+ARG BUILD_ARCH=amd64
 
 # Environment settings
 ENV LANG=C.UTF-8 \
@@ -17,6 +20,10 @@ RUN apt-get update \
         python3-pip \
         openssh-client \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Home Assistant CLI binary for autonomous server management
+RUN curl -fsSL -o /usr/local/bin/ha "https://github.com/home-assistant/cli/releases/download/5.5.0/ha_${BUILD_ARCH}" \
+    && chmod +x /usr/local/bin/ha
 
 # Install Google Antigravity CLI binary
 RUN curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin \

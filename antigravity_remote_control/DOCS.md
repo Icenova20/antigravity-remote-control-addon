@@ -9,11 +9,17 @@ The Antigravity CLI daemon establishes a secure outbound connection to Google An
 ## Permissions & Privileges
 
 This add-on requests:
-- **`config:rw`**: Mounts `/config` (your Home Assistant configuration directory) allowing `agy` to read and edit YAML configurations, scripts, and automations.
+- **`homeassistant_config:rw`**: Mounts `/config` and `/homeassistant` (your Home Assistant configuration directory) allowing `agy` to read and edit YAML configurations, scripts, and automations.
 - **`share:rw`**: Mounts `/share` for persistent shared artifacts.
 - **`ssl:ro`**: Access to local SSL certificates if configured.
-- **`hassio_api: true` & `hassio_role: manager`**: Grants permission to manage other add-ons, query supervisor logs, and restart Home Assistant Core when requested.
+- **`hassio_api: true` & `hassio_role: manager`**: Grants permission to manage other add-ons, query supervisor logs, execute `ha` CLI commands, and restart Home Assistant Core when requested.
 - **`host_network: true`**: Allows low-latency loopback communication (`127.0.0.1:8123`) to Home Assistant Core.
+
+## Tools Included
+
+- **`agy`**: Google Antigravity CLI binary with auto-update support.
+- **`ha`**: Home Assistant CLI preconfigured with Supervisor API credentials (`SUPERVISOR_TOKEN`) for autonomous system and add-on administration.
+- **`git`**, **`curl`**, **`jq`**, **`python3`**, **`openssh-client`**: Core development utilities.
 
 ## Configuration
 
@@ -25,11 +31,11 @@ auto_update: true
 ```
 
 - **`instance_name`**: The unique hostname identifier shown in the Antigravity web dashboard. Default is `homeassistant`.
-- **`auto_update`**: Automatically checks for new Antigravity CLI releases on startup.
+- **`auto_update`**: Automatically checks for and applies new Antigravity CLI releases on startup.
 
 ## Authentication
 
-If you previously authenticated `agy` in the SSH add-on or on the host, this add-on **automatically detects and migrates** your existing OAuth token from `/config/.gemini/` on initial launch.
+If you previously authenticated `agy` in the SSH add-on or on the host, this add-on **automatically detects and migrates** your existing OAuth token from `/homeassistant/.gemini/` or `/config/.gemini/` on initial launch.
 
 If starting fresh without prior credentials:
 1. Start the add-on.
