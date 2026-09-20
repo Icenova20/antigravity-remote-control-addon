@@ -34,11 +34,16 @@ COPY rootfs /
 
 # Set up S6 services and executable permissions
 RUN chmod 755 /usr/local/bin/run_antigravity.sh \
+    && chmod 755 /usr/local/bin/antigravity_api.py \
     && chmod 755 /etc/s6-overlay/s6-rc.d/antigravity/run \
     && chmod 644 /etc/s6-overlay/s6-rc.d/antigravity/type \
+    && chmod 755 /etc/s6-overlay/s6-rc.d/antigravity-api/run \
+    && chmod 644 /etc/s6-overlay/s6-rc.d/antigravity-api/type \
     && mkdir -p /etc/s6-overlay/user-bundles.d/user/contents.d \
     && touch /etc/s6-overlay/user-bundles.d/user/contents.d/antigravity \
-    && chmod 644 /etc/s6-overlay/user-bundles.d/user/contents.d/antigravity \
+    && touch /etc/s6-overlay/user-bundles.d/user/contents.d/antigravity-api \
+    && chmod 644 /etc/s6-overlay/user-bundles.d/user/contents.d/antigravity* \
     && mkdir -p /etc/s6-overlay/s6-rc.d/user/contents.d \
     && touch /etc/s6-overlay/s6-rc.d/user/contents.d/antigravity \
-    && chmod 644 /etc/s6-overlay/s6-rc.d/user/contents.d/antigravity
+    && touch /etc/s6-overlay/s6-rc.d/user/contents.d/antigravity-api \
+    && chmod 644 /etc/s6-overlay/s6-rc.d/user/contents.d/antigravity*

@@ -42,7 +42,8 @@ Click the badge below to open your Home Assistant instance and add this reposito
 ## Features
 
 - **Native Debian Bookworm Base**: Eliminates Alpine musl / glibc relocation issues with native glibc support.
-- **S6-Overlay Process Supervision**: Full service lifecycle management under s6-overlay with auto-restart on unexpected crashes.
+- **Dual-Service S6-Overlay Architecture**: Runs both the outbound remote control tunnel (`agy remote-control serve`) and the local AI microservice under s6-overlay with auto-restart on unexpected crashes.
+- **Native Local AI Microservice (Port 8199)**: Exposes a lightweight HTTP REST API (`/v1/classify`, `/v1/prompt`, `/health`) for local Gemini prompt & multimodal image classification, accessible by any Home Assistant automation or script without dependencies.
 - **Integrated Home Assistant CLI (`ha`)**: Bundles the official `ha` CLI with internal Supervisor manager privileges, enabling autonomous server administration.
 - **Automated Upstream Sync**: Daily automated GitHub Action monitors Google's official release stream and alerts Home Assistant when a new `agy` binary is released.
 - **Persistent Data Storage**: Stores authentication tokens and conversation cache in `/data/.gemini/`, persisting across add-on updates.

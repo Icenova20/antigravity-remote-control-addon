@@ -1,0 +1,7 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# S6 execution script for Antigravity Local AI Microservice
+# ==============================================================================
+bashio::log.info "Starting Antigravity Local AI Microservice daemon (port 8199)..."
+exec /usr/bin/python3 /usr/local/bin/antigravity_api.py

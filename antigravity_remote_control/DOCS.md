@@ -41,6 +41,37 @@ If starting fresh without prior credentials:
 3. If an authentication URL is printed, copy and open the link in your browser to sign in with your Google account.
 4. The authentication token is persisted permanently in `/data/.gemini/` and will survive reboots and container upgrades.
 
+## Local AI Microservice REST API (Port 8199)
+
+In addition to remote browser control, this add-on runs a native, local HTTP microservice on `http://127.0.0.1:8199`. Because the add-on runs with `host_network: true`, Home Assistant automations, REST commands, and external scripts can execute Gemini reasoning with zero external dependencies:
+
+### Endpoints
+
+#### 1. `GET /health`
+Verifies that the microservice is operational and reports the installed `agy` CLI version:
+```bash
+curl http://127.0.0.1:8199/health
+```
+
+#### 2. `POST /v1/prompt`
+Submits a text prompt directly to Gemini 3.8 Flash (or custom model):
+```bash
+curl -X POST http://127.0.0.1:8199/v1/prompt \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Analyze this sensor alert: ...", "model": "gemini-3.8-flash-low"}'
+```
+
+#### 3. `POST /v1/classify`
+Inspects local snapshot images (such as video doorbell frames) and returns structured JSON:
+```bash
+curl -X POST http://127.0.0.1:8199/v1/classify \
+  -H "Content-Type: application/json" \
+  -d '{"image_path": "/config/www/delivery_latest.jpg"}'
+```
+
+---
+
 ## Logs
 
 All daemon activity, connection events, and authentication state can be monitored in real time under the **Log** tab.
+
