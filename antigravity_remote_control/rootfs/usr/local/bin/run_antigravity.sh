@@ -8,6 +8,13 @@ set -e
 
 bashio::log.info "Starting Antigravity Remote Control bootstrap..."
 
+# 0. Ensure cross-compatibility between /config and /homeassistant paths
+if [ -d /homeassistant ] && [ ! -e /config ]; then
+    ln -sf /homeassistant /config
+elif [ -d /config ] && [ ! -e /homeassistant ]; then
+    ln -sf /config /homeassistant
+fi
+
 # 1. Ensure persistent storage layout in /data/.gemini
 mkdir -p /data/.gemini/config/projects /data/.gemini/antigravity-cli
 
