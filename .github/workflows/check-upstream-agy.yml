@@ -3,7 +3,7 @@ name: Check Upstream Antigravity CLI Updates
 on:
   schedule:
     - cron: '0 6 * * *'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write
