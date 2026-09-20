@@ -45,28 +45,90 @@ If starting fresh without prior credentials:
 
 In addition to remote browser control, this add-on runs a native, local HTTP microservice on `http://127.0.0.1:8199`. Because the add-on runs with `host_network: true`, Home Assistant automations, REST commands, and external scripts can execute Gemini reasoning with zero external dependencies:
 
-### Endpoints
+### 1. Using Antigravity as Home Assistant Assist Voice Brain (OpenAI Conversation)
 
-#### 1. `GET /health`
-Verifies that the microservice is operational and reports the installed `agy` CLI version:
+You can turn Gemini 3.8 Flash (running under your Google AI Ultra subscription quota via `agy`) into your default **Home Assistant Voice Assistant & Conversation Agent**:
+
+1. In Home Assistant, go to **Settings** > **Devices & Services** > **Add Integration**.
+2. Search for and select **OpenAI Conversation**.
+3. Fill in the connection settings:
+   - **API Key**: `antigravity` (or any placeholder string)
+   - Click **Submit**.
+4. In the integration options:
+   - Expand **Advanced Settings** (if prompted) or click **Configure**.
+   - Set **Server URL** to:
+     ```text
+     http://127.0.0.1:8199/v1
+     ```
+   - Select **Model**: `gemini-3.8-flash-low` (or `gemini-3.1-pro-low`).
+5. Open Home Assistant Assist (voice button in top-right or mobile app) and select your Antigravity conversation agent!
+
+---
+
+### REST API Endpoints
+
+#### 1. `GET /v1/models`
+Returns available models in standard OpenAI format:
 ```bash
-curl http://127.0.0.1:8199/health
+curl http://127.0.0.1:8199/v1/models
 ```
 
-#### 2. `POST /v1/prompt`
-Submits a text prompt directly to Gemini 3.8 Flash (or custom model):
+#### 2. `POST /v1/chat/completions`
+Standard OpenAI chat completion endpoint supporting multi-turn conversations and vision:
+```bash
+curl -X POST http://127.0.0.1:8199/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-3.8-flash-low",
+    "messages": [
+      {"role": "system", "content": "You are a smart home assistant."},
+      {"role": "user", "content": "Are the doors locked?"}
+    ]
+  }'
+```
+
+#### 3. `POST /v1/classify` (Entity-Aware Multimodal Vision)
+Inspects camera frames or snapshot images. Supports **4 flexible input modes**:
+- **Direct HA Camera Entity** (fetches live snapshot from HA Core automatically):
+  ```bash
+  curl -X POST http://127.0.0.1:8199/v1/classify \
+    -H "Content-Type: application/json" \
+    -d '{"camera_entity": "camera.front_door"}'
+  ```
+- **Local File Path**:
+  ```bash
+  curl -X POST http://127.0.0.1:8199/v1/classify \
+    -H "Content-Type: application/json" \
+    -d '{"image_path": "/config/www/delivery_latest.jpg"}'
+  ```
+- **Base64 Payload**:
+  ```bash
+  curl -X POST http://127.0.0.1:8199/v1/classify \
+    -H "Content-Type: application/json" \
+    -d '{"image_base64": "data:image/jpeg;base64,..."}'
+  ```
+- **External Image URL**:
+  ```bash
+  curl -X POST http://127.0.0.1:8199/v1/classify \
+    -H "Content-Type: application/json" \
+    -d '{"image_url": "https://example.com/snapshot.jpg"}'
+  ```
+
+#### 4. `POST /v1/prompt`
+Submits arbitrary text prompts with optional JSON schema enforcement:
 ```bash
 curl -X POST http://127.0.0.1:8199/v1/prompt \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "Analyze this sensor alert: ...", "model": "gemini-3.8-flash-low"}'
+  -d '{
+    "prompt": "Summarize this system alert: ...",
+    "model": "gemini-3.8-flash-low"
+  }'
 ```
 
-#### 3. `POST /v1/classify`
-Inspects local snapshot images (such as video doorbell frames) and returns structured JSON:
+#### 5. `GET /health`
+Verifies microservice health and returns installed `agy` CLI version:
 ```bash
-curl -X POST http://127.0.0.1:8199/v1/classify \
-  -H "Content-Type: application/json" \
-  -d '{"image_path": "/config/www/delivery_latest.jpg"}'
+curl http://127.0.0.1:8199/health
 ```
 
 ---
