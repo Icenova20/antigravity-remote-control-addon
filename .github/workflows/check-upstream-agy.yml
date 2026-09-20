@@ -44,14 +44,38 @@ jobs:
           # Update config.yaml
           sed -i "s/^version: .*/version: \"$NEW_VER\"/" antigravity_remote_control/config.yaml
 
-          # Prepend new entry to CHANGELOG.md
+          # Install new agy binary temporarily to extract its official changelog
+          mkdir -p /tmp/bin
+          curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /tmp/bin
+
+          # Extract upstream changelog bullets for the new version
+          AGY_NOTES=$(/tmp/bin/agy changelog | awk -v ver="${NEW_VER}:" '
+            $0 ~ ver {flag=1; next}
+            /^[0-9]+\.[0-9]+\.[0-9]+:/ && flag {flag=0}
+            flag && NF {
+              sub(/^·[[:space:]]*/, "- ")
+              print
+            }
+          ')
+
+          if [ -z "$AGY_NOTES" ]; then
+            AGY_NOTES="- Upstream release v${NEW_VER}."
+          fi
+
+          # Compose dual changelog entry
           cat << EOF > /tmp/entry.md
 
           ## $NEW_VER
 
-          - Upstream Google Antigravity CLI updated to v$NEW_VER.
+          ### 📦 Add-on & Container Wrapper
+          - Upgraded bundled upstream Antigravity CLI binary to v$NEW_VER.
+          - Rebuilt container base images with latest security patches.
+
+          ### 🤖 Google Antigravity CLI (agy)
+          $AGY_NOTES
           EOF
 
+          # Prepend new entry under '# Changelog'
           sed -i '/# Changelog/r /tmp/entry.md' antigravity_remote_control/CHANGELOG.md
 
           git config user.name "github-actions[bot]"
