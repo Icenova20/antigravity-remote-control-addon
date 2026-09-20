@@ -27,11 +27,9 @@ In the **Configuration** tab:
 
 ```yaml
 instance_name: "homeassistant"
-auto_update: true
 ```
 
-- **`instance_name`**: The unique hostname identifier shown in the Antigravity web dashboard. Default is `homeassistant`.
-- **`auto_update`**: Automatically checks for and applies new Antigravity CLI releases on startup.
+- **`instance_name`**: The unique hostname identifier shown in the Antigravity web dashboard (`antigravity.google.com`). Default is `homeassistant`.
 
 ## Authentication
 

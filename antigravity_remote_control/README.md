@@ -13,4 +13,11 @@ Runs the headless Google Antigravity Remote Control daemon (`agy remote-control 
 
 ## Installation
 
-See [repository documentation](../README.md) for installation steps via the Home Assistant Add-on Store.
+1. In Home Assistant, navigate to **Settings > Add-ons > Add-on Store**.
+2. Click the three dots in the top-right corner, select **Repositories**, and add:
+   ```text
+   https://github.com/Icenova20/antigravity-remote-control-addon
+   ```
+3. Locate **Antigravity Remote Control** in the store, click **Install**, and then click **Start**.
+
+For source code and issue tracking, visit the [GitHub Repository](https://github.com/Icenova20/antigravity-remote-control-addon).
