@@ -1,9 +1,9 @@
 name: Check Upstream Antigravity CLI Updates
 
-on:
+"on":
   schedule:
     - cron: '0 6 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -20,7 +20,7 @@ jobs:
         run: |
           MANIFEST_URL="https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json"
           LATEST_VER=$(curl -fsSL "$MANIFEST_URL" | jq -r '.version')
-          
+
           if [ -z "$LATEST_VER" ] || [ "$LATEST_VER" = "null" ]; then
             echo "Error: Failed to fetch latest version from Google manifest." >&2
             exit 1
@@ -45,20 +45,14 @@ jobs:
           sed -i "s/^version: .*/version: \"$NEW_VER\"/" antigravity_remote_control/config.yaml
 
           # Prepend new entry to CHANGELOG.md
-          python3 -c "
-with open('antigravity_remote_control/CHANGELOG.md', 'r') as f:
-    content = f.read()
+          cat << EOF > /tmp/entry.md
 
-header = '# Changelog\n\n'
-if content.startswith(header):
-    rest = content[len(header):]
-    new_content = header + '## ' + '$NEW_VER' + '\n\n- Upstream Google Antigravity CLI updated to v' + '$NEW_VER' + '.\n\n' + rest
-else:
-    new_content = '# Changelog\n\n## ' + '$NEW_VER' + '\n\n- Upstream Google Antigravity CLI updated to v' + '$NEW_VER' + '.\n\n' + content
+          ## $NEW_VER
 
-with open('antigravity_remote_control/CHANGELOG.md', 'w') as f:
-    f.write(new_content)
-"
+          - Upstream Google Antigravity CLI updated to v$NEW_VER.
+          EOF
+
+          sed -i '/# Changelog/r /tmp/entry.md' antigravity_remote_control/CHANGELOG.md
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
