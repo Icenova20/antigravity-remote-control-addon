@@ -1,0 +1,6 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# S6 execution script for Antigravity Remote Control daemon
+# ==============================================================================
+exec /usr/local/bin/run_antigravity.sh

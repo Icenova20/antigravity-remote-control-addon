@@ -1,0 +1,7 @@
+configuration:
+  instance_name:
+    name: "Instance Name"
+    description: "The hostname advertised to Google Antigravity (antigravity.google.com). Default is 'homeassistant'."
+  auto_update:
+    name: "Automatic Updates"
+    description: "Automatically check for and install Antigravity CLI updates on startup."

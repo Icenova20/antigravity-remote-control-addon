@@ -1,0 +1,90 @@
+#!/command/with-contenv bashio
+# ==============================================================================
+# Home Assistant Add-on: Antigravity Remote Control
+# Starts the Antigravity Remote Control daemon (agy remote-control serve)
+# ==============================================================================
+
+set -e
+
+bashio::log.info "Starting Antigravity Remote Control bootstrap..."
+
+# 1. Ensure persistent storage layout in /data/.gemini
+mkdir -p /data/.gemini/config/projects /data/.gemini/antigravity-cli
+
+# Symlink /root/.gemini to /data/.gemini
+rm -rf /root/.gemini
+ln -sf /data/.gemini /root/.gemini
+
+# 2. Token & state auto-migration from /config/.gemini or /homeassistant/.gemini
+if [ ! -f /data/.gemini/antigravity-cli/antigravity-oauth-token ]; then
+    if [ -f /config/.gemini/antigravity-cli/antigravity-oauth-token ]; then
+        bashio::log.info "Migrating existing Antigravity OAuth credentials from /config/.gemini..."
+        cp -a /config/.gemini/* /data/.gemini/ 2>/dev/null || true
+    elif [ -f /homeassistant/.gemini/antigravity-cli/antigravity-oauth-token ]; then
+        bashio::log.info "Migrating existing Antigravity OAuth credentials from /homeassistant/.gemini..."
+        cp -a /homeassistant/.gemini/* /data/.gemini/ 2>/dev/null || true
+    else
+        bashio::log.warning "No existing Antigravity OAuth token found! Authentication will be required."
+    fi
+fi
+
+# Ensure strict permissions on token
+if [ -f /data/.gemini/antigravity-cli/antigravity-oauth-token ]; then
+    chmod 600 /data/.gemini/antigravity-cli/antigravity-oauth-token
+fi
+
+# 3. Read and apply configuration options
+INSTANCE_NAME="homeassistant"
+if bashio::config.has_value 'instance_name'; then
+    INSTANCE_NAME=$(bashio::config 'instance_name')
+fi
+
+bashio::log.info "Configured instance name: ${INSTANCE_NAME}"
+
+# Update ~/.gemini/config/config.json
+cat << EOF > /data/.gemini/config/config.json
+{
+  "userSettings": {
+    "cliRemoteControlHostname": "${INSTANCE_NAME}",
+    "themeMode": "THEME_MODE_LIGHT"
+  }
+}
+EOF
+
+# Ensure outside-of-project.json exists
+cat << 'EOF' > /data/.gemini/config/projects/outside-of-project.json
+{
+  "id": "outside-of-project",
+  "name": "Outside of Project",
+  "projectResources": {}
+}
+EOF
+
+# 4. Binary check & fallback
+if [ ! -x /usr/local/bin/agy ]; then
+    if [ -x /config/bin/agy ]; then
+        bashio::log.info "Copying agy binary from /config/bin/agy..."
+        cp -f /config/bin/agy /usr/local/bin/agy
+        chmod +x /usr/local/bin/agy
+    elif [ -x /homeassistant/bin/agy ]; then
+        bashio::log.info "Copying agy binary from /homeassistant/bin/agy..."
+        cp -f /homeassistant/bin/agy /usr/local/bin/agy
+        chmod +x /usr/local/bin/agy
+    else
+        bashio::log.info "Downloading agy binary..."
+        curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin
+        chmod +x /usr/local/bin/agy
+    fi
+fi
+
+# 5. Handle Auto-Update check
+if bashio::config.true 'auto_update'; then
+    bashio::log.info "Auto-update enabled: agy will check for updates in background."
+fi
+
+CURRENT_VER=$(/usr/local/bin/agy --version 2>/dev/null || echo "unknown")
+bashio::log.info "Antigravity CLI version: ${CURRENT_VER}"
+bashio::log.info "Starting 'agy remote-control serve' in foreground..."
+
+# 6. Execute daemon in foreground
+exec /usr/local/bin/agy remote-control serve
