@@ -101,11 +101,10 @@ if [ ! -x /usr/local/bin/agy ]; then
     fi
 fi
 
-# 5. Handle Auto-Update check
-if bashio::config.true 'auto_update'; then
-    bashio::log.info "Checking for Antigravity CLI updates..."
-    /usr/local/bin/agy update || bashio::log.warning "Auto-update check failed or host offline; continuing with current version."
-fi
+# 5. Check for updates on startup
+bashio::log.info "Checking for Antigravity CLI updates on bootstrap..."
+/usr/local/bin/agy update || bashio::log.warning "Auto-update check failed or host offline; continuing with current version."
+
 
 CURRENT_VER=$(/usr/local/bin/agy --version 2>/dev/null || echo "unknown")
 bashio::log.info "Antigravity CLI version: ${CURRENT_VER}"

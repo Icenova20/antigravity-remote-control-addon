@@ -1,0 +1,67 @@
+name: Check Upstream Antigravity CLI Updates
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Runs daily at 06:00 UTC
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Query upstream Google Antigravity release
+        id: query
+        run: |
+          MANIFEST_URL="https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json"
+          LATEST_VER=$(curl -fsSL "$MANIFEST_URL" | jq -r '.version')
+          
+          if [ -z "$LATEST_VER" ] || [ "$LATEST_VER" = "null" ]; then
+            echo "Error: Failed to fetch latest version from Google manifest." >&2
+            exit 1
+          fi
+
+          CURRENT_VER=$(sed -n 's/^version: *"\(.*\)"/\1/p' antigravity_remote_control/config.yaml)
+          echo "Current add-on version: $CURRENT_VER"
+          echo "Latest upstream version: $LATEST_VER"
+
+          echo "latest_version=$LATEST_VER" >> "$GITHUB_OUTPUT"
+          echo "current_version=$CURRENT_VER" >> "$GITHUB_OUTPUT"
+
+      - name: Update add-on version and changelog
+        if: steps.query.outputs.latest_version != steps.query.outputs.current_version
+        env:
+          NEW_VER: ${{ steps.query.outputs.latest_version }}
+          OLD_VER: ${{ steps.query.outputs.current_version }}
+        run: |
+          echo "Bumping add-on version from $OLD_VER to $NEW_VER..."
+
+          # Update config.yaml
+          sed -i "s/^version: .*/version: \"$NEW_VER\"/" antigravity_remote_control/config.yaml
+
+          # Prepend new entry to CHANGELOG.md
+          python3 -c "
+with open('antigravity_remote_control/CHANGELOG.md', 'r') as f:
+    content = f.read()
+
+header = '# Changelog\n\n'
+if content.startswith(header):
+    rest = content[len(header):]
+    new_content = header + '## ' + '$NEW_VER' + '\n\n- Upstream Google Antigravity CLI updated to v' + '$NEW_VER' + '.\n\n' + rest
+else:
+    new_content = '# Changelog\n\n## ' + '$NEW_VER' + '\n\n- Upstream Google Antigravity CLI updated to v' + '$NEW_VER' + '.\n\n' + content
+
+with open('antigravity_remote_control/CHANGELOG.md', 'w') as f:
+    f.write(new_content)
+"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add antigravity_remote_control/config.yaml antigravity_remote_control/CHANGELOG.md
+          git commit -m "chore(release): bump agy to v$NEW_VER"
+          git push
