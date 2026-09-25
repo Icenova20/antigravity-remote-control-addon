@@ -1,7 +1,7 @@
 name: "Antigravity Remote Control"
 slug: "antigravity_remote_control"
 description: "Headless Google Antigravity Remote Control daemon & local AI microservice for Home Assistant"
-version: "1.2.10"
+version: "1.2.11"
 arch:
   - amd64
   - aarch64
