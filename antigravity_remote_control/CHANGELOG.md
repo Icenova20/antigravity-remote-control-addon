@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.13
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.2.13.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Improved rate-limit handling when the model API returns a retry delay: the CLI now waits the delay the server asks for instead of a fixed 5 seconds, and stops right away instead of retrying when the delay is longer than 30 seconds or the quota is a daily or billing cap
+- Improved rendering efficiency, cutting CPU use and memory churn while the conversation view redraws, such as during fast scrolling or while the agent is working
+- Improved the artifact viewer's `m` hint to name the content and the mode it switches to, such as `diagram ASCII`, `diagram source`, or `math image`, instead of `toggle ASCII` or `toggle raw`
+- Fixed the workspace trust dialog, the `/help` panel, and the sign-in and MCP authentication screens clipping text on narrow terminals of around 40 columns; long lines and navigation hints now wrap, and the `/help` tab bar compacts to fit
+
 ## 1.2.12
 
 ### 📦 Add-on & Container Wrapper
