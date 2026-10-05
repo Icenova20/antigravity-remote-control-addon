@@ -96,7 +96,7 @@ if [ ! -x /usr/local/bin/agy ]; then
         chmod +x /usr/local/bin/agy
     else
         bashio::log.info "Downloading agy binary..."
-        curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin
+        curl -fsSL --compressed https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin
         chmod +x /usr/local/bin/agy
     fi
 fi

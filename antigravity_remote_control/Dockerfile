@@ -26,7 +26,7 @@ RUN curl -fsSL -o /usr/local/bin/ha "https://github.com/home-assistant/cli/relea
     && chmod +x /usr/local/bin/ha
 
 # Install Google Antigravity CLI binary
-RUN curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin \
+RUN curl -fsSL --compressed https://antigravity.google/cli/install.sh | bash -s -- -d /usr/local/bin \
     && chmod +x /usr/local/bin/agy
 
 # Copy rootfs overlay

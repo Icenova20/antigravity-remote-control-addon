@@ -19,7 +19,7 @@ jobs:
         id: query
         run: |
           MANIFEST_URL="https://antigravity-cli-auto-updater-974169037036.us-central1.run.app/manifests/linux_amd64.json"
-          LATEST_VER=$(curl -fsSL "$MANIFEST_URL" | jq -r '.version')
+          LATEST_VER=$(curl -fsSL --compressed "$MANIFEST_URL" | jq -r '.version')
 
           if [ -z "$LATEST_VER" ] || [ "$LATEST_VER" = "null" ]; then
             echo "Error: Failed to fetch latest version from Google manifest." >&2
@@ -46,7 +46,7 @@ jobs:
 
           # Install new agy binary temporarily to extract its official changelog
           mkdir -p /tmp/bin
-          curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- -d /tmp/bin
+          curl -fsSL --compressed https://antigravity.google/cli/install.sh | bash -s -- -d /tmp/bin
 
           # Extract upstream changelog bullets for the new version
           AGY_NOTES=$(/tmp/bin/agy changelog | awk -v ver="${NEW_VER}:" '
