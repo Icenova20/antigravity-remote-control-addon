@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.3.0.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Changed the default `Verbosity` setting from `high` to `medium`, so the conversation view now groups related tool calls and thoughts into concise summaries while keeping commands and responses visible. This applies to everyone who never picked a verbosity, including anyone who selected `high` while it was still the default; set `Verbosity` back to `high` in `/config` to see every tool call, command, and thought in full again.
+- Changed `j` and `k` in the `/diff` file view to move the line cursor like the up and down arrow keys, matching the file list and Vim, instead of jumping to the next or previous file; use the left and right arrow keys to switch files.
+- Fixed trackpad and mouse-wheel scrolling in the conversation view jumping back and forth, most noticeably over SSH or inside tmux, by ignoring the sideways part of diagonal swipes and limiting how far a single fast scroll step can move; `Page Up` and `Page Down` still move a full page.
+- Fixed files and folders whose paths contain spaces, `#`, `%`, or other special characters, or that sit on a Windows drive, being mishandled across the CLI: `@` file mentions, `/codesearch` results, and file links in agent responses now open the right file, and workspace trust and project-scoped custom agents now recognize projects created in the Antigravity desktop app in such folders.
+
 ## 1.2.17
 
 ### 📦 Add-on & Container Wrapper
