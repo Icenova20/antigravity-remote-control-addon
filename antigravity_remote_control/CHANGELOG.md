@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.5
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.3.5.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Added Auto mode, which approves file edits and safe commands without asking and still prompts before irreversible actions; commands that would leave the terminal sandbox are first reviewed by a separate agent. Choose it with `--mode auto`, from `Agent Mode` in `/config`, or by pressing `Shift+Tab` to cycle modes. Auto mode is available on Linux and macOS, with Windows support coming later.
+- Added the `/compact` command to compact the conversation on demand and free up the context window: `/compact` on its own summarizes the conversation and ends the turn, and `/compact <message>` summarizes it and then answers your message. While it runs the CLI shows a `Compacting conversation...` progress label that you can cancel with `Esc`, and when it finishes it shows how many steps were summarized and how much smaller the context became.
+- Added syntax highlighting to the `/diff` file view, with token colors for each color scheme and a background tint on added and removed lines. With the `Terminal` color scheme the CLI detects whether your terminal has a light or dark background and picks matching colors. The color scheme previews in `/config` and first-run setup now show a sample exactly as `/diff` draws it.
+- Added folding to the `/diff` file view: each hunk header now shows how many unchanged lines are hidden above it, `Ctrl+O` expands or collapses the fold nearest the cursor, and `f` switches between showing only the changes and the whole file. Both keys work on uncommitted changes when the file on disk still matches the diff, and the footer explains when they can't be used.
+- Improved `/diff` performance on very large files by rendering only the rows on screen, so scrolling, expanding folds, and opening the whole file no longer freeze the CLI. Expanding folds and showing the whole file are turned off for files over 100,000 lines or 10 MB, and the footer says why.
+- Fixed colors being reduced to 256 colors in iTerm2 over SSH, where `COLORTERM` is not forwarded; the CLI now uses full 24-bit color when `LC_TERMINAL=iTerm2` is set, unless `COLORTERM` or `NO_COLOR` says otherwise.
+
 ## 1.3.4
 
 ### 📦 Add-on & Container Wrapper
