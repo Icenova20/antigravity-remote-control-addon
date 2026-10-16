@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.0.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Added terminal status reporting over OSC 7501: in terminals that support it, the tab or window shows whether the CLI is working, waiting for your input, done, or failed. The CLI checks for support first, so other terminals are unaffected. Set `AGY_CLI_OSC7501=off` to turn it off, `AGY_CLI_OSC7501=on` for a terminal that supports it but doesn't answer the check, or `AGY_CLI_OSC7501_MESSAGES=brief` to show only the status without details such as the pending command or question.
+- Added the `alt+m` shortcut (`Option+m` on macOS when Option is set to act as Alt) to send a message using the opposite of your `Queued Messages` setting in `/config`, so you can send right away while in `Queue` mode, or queue a message while in `Send Immediately` mode.
+- Improved `agy plugin validate` so it checks a plugin with the same rules the CLI uses to load it, instead of simplified checks that rejected valid plugins (such as a manifest without a `name`) and missed problems that kept a plugin from loading. It lists each error and warning with its file and line, accepts a plugin directory or its `plugin.json`, warns about common `plugin.json` mistakes such as unknown fields (with "did you mean" suggestions), invalid names, and components placed inside `.antigravity-plugin/` instead of the plugin root, and adds `--strict` to fail on warnings and `--json` for a machine-readable report in CI.
+- Fixed the CLI refusing every message with `Eligibility check failed` until you restarted it when the service was briefly unavailable or rate-limited at launch; the check now retries temporary errors and no longer locks the session.
+- Fixed plugin MCP servers that use a variable in a request header, such as `"Authorization": "Bearer ${TOKEN}"`, sending the literal placeholder and failing to authenticate; headers now get the value you configured, like the server's command, arguments, and environment already did.
+- Fixed the `/diff` Commit Tree view: the header now counts commits instead of lines, the cursor stops only on commit rows and `Enter` opens that commit, the view fills the terminal height, and it shows the latest 100 commits (previously 10) with scrolling.
+- Fixed the agent losing track of its file changes, tasks, and session cost when a background command finished while the agent kept working; they no longer roll back to the point where that command started.
+- Fixed a background command's final output sometimes missing from its task log; the output is now always recorded when the command finishes or is canceled.
+- Fixed links to directories disappearing from agent responses; they now show the directory name, for example `pipelines/`.
+
 ## 1.3.5
 
 ### 📦 Add-on & Container Wrapper
