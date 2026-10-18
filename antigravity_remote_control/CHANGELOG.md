@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.2
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.2.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Fixed conversation history not showing in Remote Control in daemon mode.
+
 ## 1.4.0
 
 ### 📦 Add-on & Container Wrapper
