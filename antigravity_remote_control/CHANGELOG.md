@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.4.4
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.4.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Added Auto mode on Windows 11 version 24H2 and later for personal Google Accounts, selectable via `--mode auto`, `Agent Mode` in `/config`, `Shift+Tab`, or Remote Control Settings (`Agent` remains the default).
+- Added whole-file toggle (`f`) and hunk folding (`Ctrl+O`) to `Commit Tree` and `Per Turn` views in `/diff`, and consolidated `Per Turn` diffs so multiple edits to a file in one turn appear as a single combined diff.
+- Added `_meta["antigravity.google/root_conversation_id"]` to MCP `tools/call` requests so MCP servers receive the top-level conversation ID even when a tool is called from a nested subagent.
+- Improved Auto mode's review of commands that leave the terminal sandbox to include the assistant's preceding question on short replies like `yes`, check every subcommand in pipelines, and prompt before destructive Git or file commands.
+- Improved `agy plugin validate` with stricter checks across `plugin.json`, MCP server configs, `hooks.json`, and sidecar manifests for invalid JSON syntax, unknown fields, bad variable placeholders, unrecognized hook tool matchers, and missing hook scripts.
+- Improved CPU and memory usage while streaming responses by caching streamed code-block syntax tokens, rendered Markdown blocks, and inline file-edit confirmation diffs across frames.
+- Improved `/compact` and automatic compaction to retain tool declarations on summarization requests so the model API reuses its cached prompt prefix.
+- Improved Remote Control on tablets and foldables to use the multi-pane layout with touch-sized controls instead of collapsing to the phone view, and kept popovers open while dragging scrollbars.
+- Fixed subagents losing plugins inherited from the parent session, and fixed plugin-bundled subagents with `plugins.inherit_user: false` and restricted MCP tools failing to start with `mcp spec not found for provider`.
+- Fixed rules and `SKILL.md` skills loading twice when discovered from both a standalone customization folder and an enabled plugin.
+- Fixed long rows wrapping instead of truncating at the terminal width in `/diff`'s `Commit Tree` and `Per Turn` lists, and `Per Turn` headers truncating prompts at 50 characters.
+- Fixed the prompt box staying mid-screen after closing panels, dropdowns, or inline prompts, and blank gaps appearing above the prompt in `Medium` verbosity mode.
+- Fixed `Ctrl+Z` undo in the prompt mishandling pasted text, merging typing with recalled history entries, recording no-op `Backspace` or `Delete` steps, and truncating characters near emoji.
+- Fixed MCP client sessions and background connection routines leaking when `tools/list` failed during server startup or when the CLI shut down while a server was connecting.
+- Fixed the system prompt's user rules wording so `GEMINI.md` and `AGENTS.md` rules explicitly override earlier built-in instructions instead of only instructions that follow them.
+- Fixed supported media attachments with parameterized MIME types such as `audio/webm; codecs=opus` being rejected as unsupported.
+- Fixed several UI issues in Remote Control, including clipped headers and dialogs on phones, iOS Safari zoom on input focus, `Enable Telemetry` and `Marketing Emails` reverting while Settings loads, and dragged URLs losing query or `#` parameters.
+- Fixed rendering and export bugs in Remote Control, including broken nested code blocks, `$VAR` shell variables parsed as LaTeX, broken media previews, blurry or blank diagrams in `Copy Image` and `Export as PDF`, and background-tab timer drift.
+
 ## 1.4.3
 
 ### 📦 Add-on & Container Wrapper
