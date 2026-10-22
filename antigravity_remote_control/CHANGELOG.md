@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.4.5
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.5.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Improved how agent responses read: a blank line now separates the collapsed thought block from the response, and once the response starts, the collapsed thought shows only its `Thought for …` header instead of repeating a snippet of the thinking; expand it to see the full thinking.
+- Improved `/` search in the `/diff` file view to count matches inside folded unchanged lines, such as `match 2/5 · +3 hidden` or `no matches · +1 hidden`, and the `f` hint now reads `show N hidden matches`.
+- Improved `/diff`'s `Commit Tree` to mark the selected commit with the same `>` cursor and selection color as `All Changes` and `Per Turn` instead of a highlighted bar, and made `Per Turn` start with the cursor on the first file instead of its turn header.
+- Improved recurring cron schedules created with the agent's `schedule` tool to fire at a consistent per-schedule offset instead of exactly on the cron boundary, to avoid traffic spikes: schedules that repeat within a day, such as every 30 minutes or hourly, now fire somewhere within their period, fixed-time schedules such as daily at 9:00 still fire within their scheduled minute, and the agent can request exact timing when a schedule needs it. `@every` schedules are unchanged.
+- Improved idle CPU usage by pausing screen refreshes while nothing on screen changes, roughly halving the CLI's CPU use when it is idle.
+- Improved CPU usage while a response streams by skipping redundant screen updates and refreshing the credit balance less often.
+- Improved rendering speed for long conversations, and made long conversations load faster when you resume them.
+- Improved startup CPU usage when the CLI refreshes its conversation summaries.
+- Improved memory usage by allocating storage for the prompt and other text inputs as you type instead of reserving it up front.
+- Fixed the agent silently retrying, potentially without end, when a model response was blocked by content safety filters.
+- Fixed plugins failing to load when `plugin.json` gives `skills` as a single path string, such as `"skills": "./skills/"`, instead of an array, as some plugins written for other tools do.
+- Fixed marketplace plugin installs and automatic updates failing with a checksum mismatch or network error when a download was briefly stale or interrupted; the CLI now retries the download once.
+
 ## 1.4.4
 
 ### 📦 Add-on & Container Wrapper
