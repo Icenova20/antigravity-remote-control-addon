@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.6
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.6.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Added a `Configure MCP servers...` row for installed plugins in `/plugin`, so you can set or change a plugin's MCP server variables at any time without disabling and re-enabling it; plugins with missing values show `⚠ needs setup`, each server shows `✓ configured` or the variables it still needs, and saving restarts an enabled plugin's servers so the new values take effect.
+- Improved terminal sandbox defaults to protect more credentials: sandboxed commands can no longer read or modify `~/.docker`, `~/.kube`, or `~/_netrc` unless you grant access explicitly. Previously `~/.docker` and `~/.kube` were writable inside the sandbox, so sandboxed commands that use Docker registry or Kubernetes cluster credentials now need an explicit grant.
+- Improved context compaction, including `/compact`, to keep images, PDFs, and other files you attached in the conversation summary, so the agent can still see them after older history is summarized.
+- Improved permission prompts so that allowing an action for the conversation, in the main agent or in a subagent, applies across the main conversation and all of its subagents instead of asking again for the same action.
+- Improved the in-progress status line to show what the agent is waiting on, such as initializing MCP servers or retrying an unavailable model (for example `Model unavailable (attempt 2/10), retrying in 12s` with a live countdown), instead of a generic working label.
+- Improved `/diff` to highlight the exact words that changed within each modified line, in every color scheme.
+- Improved `agy plugin validate`: it now has `--help`, checks a plugin's context providers (missing `label` or `command`, invalid or duplicate triggers, unknown fields, missing command files), warns about `skills` entries in `plugin.json` that don't exist or contain no `SKILL.md`, and reports every `SKILL.md` the plugin loader skips, including skills listed through `plugin.json` or `skills.json`.
+- Fixed terminal commands occasionally failing to start with `argument list too long` when the model returned a very large reasoning signature with the tool call.
+- Fixed text cursors drifting away from the insertion point after wide characters (CJK, emoji), tabs, other Unicode spaces, and on soft-wrapped lines, including `Up`/`Down` landing on the wrong row, in the prompt and in the settings, permission amend, plugin setup, feedback, hooks, and artifact search boxes.
+- Fixed the `Esc disabled during file edits` warning naming the wrong reject key when the prompt shows an extra choice, such as for edits outside the workspace in accept-edits mode.
+- Fixed sign-in not persisting across restarts on macOS and Windows for enterprise accounts, because the saved credential exceeded the system keychain's size limit.
+
 ## 1.4.5
 
 ### 📦 Add-on & Container Wrapper
