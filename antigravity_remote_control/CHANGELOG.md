@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.4.7
+
+### 📦 Add-on & Container Wrapper
+- Upgraded bundled upstream Antigravity CLI binary to v1.4.7.
+- Rebuilt container base images with latest security patches.
+
+### 🤖 Google Antigravity CLI (agy)
+- Added `lastUserInput` to the JSON that hook commands receive on stdin, so a hook can inspect the latest message you sent, for example to screen prompts before the agent acts on them.
+- Added a temporary opt-in Halloween theme: turn on `Seasonal Themes` in `/config`, a row shown only while the theme is in season, for a Halloween startup banner, a moon-phase spinner, and a themed running light and prompt box borders.
+- Improved Auto mode to ask for approval less often on routine commands, such as cleaning up temporary files, stopping a local process, or running a code formatter.
+- Improved headless `-p` runs to use much less CPU, especially for long answers and when you have many saved conversations: they no longer build the conversation search index or render the transcript for display, and no longer start your custom status line and window title commands, none of which print mode shows.
+- Improved rendering speed while a response streams, when a permission prompt appears, and when you resize the window.
+- Improved MCP tools that are loaded on demand to return results of up to 10 KB directly to the agent; previously anything over 4 KB was saved to a file that the agent had to read in an extra step.
+- Improved the `/help` shortcuts tab by leaving out basic navigation keys such as the arrow keys, so the more useful shortcuts are easier to find.
+- Fixed skills, rules, custom agents, plugins, plugin MCP servers, and hooks not loading when you sign in with Application Default Credentials (`AGY_ADC_AUTH`).
+- Fixed conversations compacting over and over when a single message, tool output, or attached document was too large to fit in the context.
+- Fixed long links that wrap inside a Markdown table cell being linked only on their first line, to a truncated URL, so the whole link can now be clicked or copied. Tables in the default `Terminal` color scheme now use box-drawing borders instead of ASCII `|`, matching the other color schemes.
+- Fixed copying a long command that wraps across rows in a code block or inline code, which now copies as a single line instead of with a line break at each wrap point; wrapped code-block lines also now break between words and keep the block's indentation.
+- Fixed Vim mode's `r` replace, in Normal and Visual mode, leaving part of a collapsed `[Pasted text #N]` placeholder behind; the whole placeholder is now replaced.
+- Fixed plugin and MCP server sign-ins not being saved on macOS and Windows when the token was too large for the system keychain; such tokens are now stored in the CLI's private secrets file.
+- Fixed plugin MCP servers that sign in with OAuth being able to use a token saved by another user of the same computer account, or keeping the previous user's connection after you switch accounts or sign out. Their tokens now belong to the signed-in user and these servers reconnect when the user changes, so you may need to sign in to them again.
+
 ## 1.4.6
 
 ### 📦 Add-on & Container Wrapper
